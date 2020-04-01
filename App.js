@@ -4,8 +4,12 @@ import {Text, View} from 'react-native';
 import {Router, Scene} from 'react-native-router-flux';
 
 /** Component for flux-routes */
-import AuthScreen from './src/view/AuthScreens/AuthScreen';
-import SplashScreen from './src/view/AuthScreens/SplashScreen';
+import {
+  AuthScreen,
+  SplashScreen,
+  AdminAuthScreen,
+} from './src/view/AuthScreens';
+import {DrawerRoutes} from './src/config/routes';
 
 export class App extends Component {
   render() {
@@ -19,6 +23,16 @@ export class App extends Component {
             hideNavBar={true}
           />
           <Scene key="Auth" component={AuthScreen} hideNavBar={true} />
+          <Scene
+            key="AdminAuth"
+            component={AdminAuthScreen}
+            hideNavBar={true}
+          />
+          <Scene
+            key="DrawerRoutes"
+            component={DrawerRoutes}
+            hideNavBar={true}
+          />
         </Scene>
       </Router>
     );

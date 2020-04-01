@@ -12,11 +12,7 @@ import {Logo} from '../../assets/img';
 import {Icon} from 'react-native-elements';
 import {Actions} from 'react-native-router-flux';
 
-const SwitchToAdmin = () => {
-  Actions.jump('AdminAuth');
-};
-
-class AuthScreen extends Component {
+class AdminAuthScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -61,11 +57,8 @@ class AuthScreen extends Component {
               marginBottom: 25,
             }}>
             <Image source={Logo} style={{width: 100, height: 75}} />
-            <Text style={{marginTop: 20, color: '#ffffff', fontSize: 20}}>
-              Login & book your room now
-            </Text>
-            <Text style={{marginTop: 7, color: '#ffffff', fontSize: 20}}>
-              Only on Hotel Angel
+            <Text style={{marginTop: 20, color: '#ffffff', fontSize: 24}}>
+              Administrator Portal
             </Text>
           </View>
           <View
@@ -79,7 +72,7 @@ class AuthScreen extends Component {
               <Icon name="perm-identity" />
               <TextInput
                 onChangeText={val => this.setState({username: val})}
-                placeholder="Username/email ..."
+                placeholder="Username ..."
                 style={styles.InputField}
               />
             </View>
@@ -93,49 +86,13 @@ class AuthScreen extends Component {
                 secureTextEntry={true}
               />
             </View>
-            <View style={{flexDirection: 'row'}}>
-              <Text
-                onPress={() => SwitchToAdmin()}
-                style={{
-                  flex: 1,
-                  textAlign: 'left',
-                  color: '#698474',
-                  marginBottom: 10,
-                }}>
-                Admin ?
-              </Text>
-              <Text
-                onPress={() =>
-                  alert(
-                    'Sorry, this feature not available for now, coming soon...',
-                  )
-                }
-                style={{
-                  flex: 1,
-                  textAlign: 'right',
-                  color: '#698474',
-                  marginBottom: 10,
-                }}>
-                Forgot Password ?
-              </Text>
-            </View>
-            <View style={{flexDirection: 'row'}}>
+            <View>
               <TouchableOpacity
-                onPress={() => {
-                  /* alert(`${this.state.username}, ${this.state.password}`); */
-                  Actions.jump('DrawerRoutes');
-                }}
+                onPress={() =>
+                  alert(`${this.state.username}, ${this.state.password}`)
+                }
                 style={styles.ButtonStyle}>
                 <Text style={styles.TextButton}>LOGIN</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() =>
-                  alert(
-                    'Sorry, Register feature is not available for noe, coming soon...',
-                  )
-                }
-                style={styles.ButtonStyle}>
-                <Text style={styles.TextButton}>REGISTER</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -144,7 +101,6 @@ class AuthScreen extends Component {
     );
   }
 }
-
 const styles = StyleSheet.create({
   ViewInput: {
     width: '100%',
@@ -164,7 +120,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   ButtonStyle: {
-    flex: 1,
     height: 50,
     borderRadius: 40,
     justifyContent: 'center',
@@ -179,4 +134,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AuthScreen;
+export default AdminAuthScreen;

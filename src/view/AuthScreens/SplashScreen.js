@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Text, View, Image, Animated} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 
-import logo from '../../assets/img/logo.png';
+import {Logo} from '../../assets/img';
 
 const SwitchToAuth = () => {
   Actions.replace('Auth');
@@ -19,6 +19,7 @@ class SplashScreen extends Component {
         tension: 5,
         friction: 15,
         duration: 2500,
+        useNativeDriver: false,
       }).start(),
     ]).start();
     setTimeout(SwitchToAuth, 2000);
@@ -30,7 +31,7 @@ class SplashScreen extends Component {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#4267b2',
+          backgroundColor: '#8ac6d1',
         }}>
         <Animated.View
           style={{
@@ -40,7 +41,7 @@ class SplashScreen extends Component {
               outputRange: [80, 0],
             }),
           }}>
-          <Image source={logo} style={{width: 150, height: 100}} />
+          <Image source={Logo} style={{width: 150, height: 100}} />
         </Animated.View>
       </View>
     );
