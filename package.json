@@ -21,11 +21,13 @@
     "react": "16.11.0",
     "react-native": "0.62.0",
     "react-native-action-button": "^2.8.5",
+    "react-native-config": "^1.0.0",
     "react-native-datepicker": "^1.7.2",
     "react-native-elements": "^1.2.7",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-paper": "^3.6.0",
     "react-native-reanimated": "^1.7.1",
+    "react-native-router-flux": "^4.2.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.4.0"
   },
