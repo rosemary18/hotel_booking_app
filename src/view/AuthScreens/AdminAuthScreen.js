@@ -11,15 +11,31 @@ import {
 import {Logo} from '../../assets/img';
 import {Icon} from 'react-native-elements';
 import {Actions} from 'react-native-router-flux';
+import {connect} from 'react-redux';
+import {loginUser} from '../../config/redux/actions/authActions';
+import PropTypes from 'prop-types';
 
 class AdminAuthScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password: '',
+      userType: 'admin',
+      errors: {},
       formAnimated: new Animated.Value(0),
     };
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      this.setState({errors: {}});
+      Actions.replace('LoadingScreen', {toScreen: 'AdminDrawer'});
+    }
+
+    if (nextProps.errors) {
+      this.setState({errors: nextProps.errors});
+    }
   }
 
   componentDidMount() {
@@ -33,6 +49,17 @@ class AdminAuthScreen extends Component {
       }).start(),
     ]).start();
   }
+
+  handleSubmit = () => {
+    const {email, password, userType} = this.state;
+    const userData = {
+      email,
+      password,
+      userType,
+    };
+    this.props.loginUser(userData);
+  };
+
   render() {
     return (
       <View
@@ -40,7 +67,7 @@ class AdminAuthScreen extends Component {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#8ac6d1',
+          backgroundColor: '#f5f5f5',
         }}>
         <Animated.View
           style={{
@@ -52,32 +79,39 @@ class AdminAuthScreen extends Component {
           }}>
           <View
             style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 25,
-            }}>
-            <Image source={Logo} style={{width: 100, height: 75}} />
-            <Text style={{marginTop: 20, color: '#ffffff', fontSize: 24}}>
-              Administrator Portal
-            </Text>
-          </View>
-          <View
-            style={{
               width: 300,
-              backgroundColor: '#fffdf9',
+              backgroundColor: '#fff',
               borderRadius: 25,
               padding: 20,
+              borderColor: '#889aa4',
+              borderWidth: 1,
             }}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 25,
+              }}>
+              <Image source={Logo} style={{width: 75, height: 55}} />
+              <Text style={{marginTop: 5, fontSize: 16, color: '#889aa4'}}>
+                ADMINISTRATOR PORTAL
+              </Text>
+            </View>
             <View style={styles.ViewInput}>
-              <Icon name="perm-identity" />
+              <Icon name="perm-identity" color="#889aa4" />
               <TextInput
-                onChangeText={val => this.setState({username: val})}
-                placeholder="Username ..."
+                onChangeText={val => this.setState({email: val})}
+                placeholder="Email ..."
                 style={styles.InputField}
               />
             </View>
+            {this.state.errors.email ? (
+              <Text style={{marginBottom: 10, color: 'red'}}>
+                * {this.state.errors.email}
+              </Text>
+            ) : null}
             <View style={styles.ViewInput}>
-              <Icon name="vpn-key" />
+              <Icon name="lock" color="#889aa4" />
               <TextInput
                 onChangeText={val => this.setState({password: val})}
                 maxLength={16}
@@ -86,11 +120,17 @@ class AdminAuthScreen extends Component {
                 secureTextEntry={true}
               />
             </View>
+            {this.state.errors.password ? (
+              <Text style={{marginBottom: 10, color: 'red'}}>
+                * {this.state.errors.password}
+              </Text>
+            ) : null}
             <View>
               <TouchableOpacity
-                onPress={() =>
-                  alert(`${this.state.username}, ${this.state.password}`)
-                }
+                onPress={() => {
+                  /* Actions.replace('AdminDrawer'); */
+                  this.handleSubmit();
+                }}
                 style={styles.ButtonStyle}>
                 <Text style={styles.TextButton}>LOGIN</Text>
               </TouchableOpacity>
@@ -105,7 +145,7 @@ const styles = StyleSheet.create({
   ViewInput: {
     width: '100%',
     borderRadius: 15,
-    borderColor: '#8ac6d1',
+    borderColor: '#889aa4',
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -124,14 +164,28 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#8ac6d1',
-    marginHorizontal: 5,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#889aa4',
   },
   TextButton: {
-    color: '#ffffff',
+    color: '#889aa4',
     fontWeight: 'bold',
     fontSize: 16,
   },
 });
 
-export default AdminAuthScreen;
+AdminAuthScreen.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors,
+});
+export default connect(
+  mapStateToProps,
+  {loginUser},
+)(AdminAuthScreen);

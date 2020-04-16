@@ -1,0 +1,7 @@
+export const GET_ERRORS = 'GET_ERRORS';
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const CLEAR_CURRENT_USER = 'CLEAR_CURRENT_USER';
+export const GET_ROOM = 'GET_ROOM';
+export const GET_BOOKING_DATA = 'GET_BOOKING_DATA';
+export const CLEAR_BOOKING_DATA = 'CLEAR_BOOKING_DATA';
+export const GET_CART = 'GET_CART';

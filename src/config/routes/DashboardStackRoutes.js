@@ -8,49 +8,91 @@ import {
 } from '../../view/DashboardScreens';
 import {Icon} from 'react-native-elements';
 import {Logo} from '../../assets/img';
+import {NotificationsScreen} from '../../view/NotificationsScreens';
+import {CartScreen} from '../../view/CartScreens';
 
 const StackRoutes = createStackNavigator();
+
 const DashboardStackRoutes = ({navigation}) => {
   return (
     <StackRoutes.Navigator
-      initialRouteName="Screen1"
+      initialRouteName="Dashboard"
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#8ac6d1',
+          shadowOpacity: 1,
         },
-        title: 'Header',
         headerTitle: () => (
-          <Image source={Logo} style={{height: 18, width: 25}} />
+          <Image source={Logo} style={{height: 25, width: 45}} />
         ),
         headerRight: () => (
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
               style={{marginRight: 10}}
-              onPress={() => navigation.openDrawer()}>
-              <Icon name="notifications" color={'#ffffff'} />
+              onPress={() => navigation.navigate('Notification')}>
+              <View
+                style={{
+                  position: 'absolute',
+                  height: 6,
+                  width: 6,
+                  borderRadius: 25,
+                  backgroundColor: 'red',
+                  marginLeft: 16,
+                }}
+              />
+              <Icon name="notifications" color="#889aa4" />
             </TouchableOpacity>
+
             <TouchableOpacity
               style={{marginRight: 20}}
-              onPress={() => navigation.openDrawer()}>
-              <Icon name="shopping-cart" color={'#ffffff'} />
+              onPress={() => navigation.navigate('Cart')}>
+              <View
+                style={{
+                  position: 'absolute',
+                  height: 6,
+                  width: 6,
+                  borderRadius: 25,
+                  backgroundColor: 'red',
+                  marginLeft: 23,
+                }}
+              />
+              <Icon name="shopping-cart" color="#889aa4" />
             </TouchableOpacity>
             <TouchableOpacity
-              style={{marginRight: 10}}
-              onPress={() => navigation.openDrawer()}>
-              <Icon name="reorder" color={'#ffffff'} />
+              style={{marginRight: 15}}
+              onPress={() => navigation.toggleDrawer()}>
+              <Icon name="reorder" color="#889aa4" />
             </TouchableOpacity>
           </View>
         ),
+        headerTintColor: '#889aa4',
       }}>
-      <StackRoutes.Screen name="Screen1" component={DashboardScreen} />
-      <StackRoutes.Screen name="Screen2" component={RoomsScreen} />
-      <StackRoutes.Screen name="Screen3" component={NewsScreen} />
+      <StackRoutes.Screen name="Dashboard" component={DashboardScreen} />
+      <StackRoutes.Screen
+        name="Rooms"
+        component={RoomsScreen}
+        options={{headerTitle: 'Rooms', headerLeft: null}}
+      />
+      <StackRoutes.Screen
+        name="News"
+        component={NewsScreen}
+        options={{headerTitle: 'News'}}
+      />
+      <StackRoutes.Screen
+        name="Notification"
+        component={NotificationsScreen}
+        options={{headerTitle: 'Notifications', headerLeft: null}}
+      />
+      <StackRoutes.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          headerTitle: 'Cart',
+          headerLeft: null,
+          headerTintColor: '#889aa4',
+        }}
+      />
     </StackRoutes.Navigator>
   );
 };
-/*  <TouchableOpacity
-   style={{paddingLeft: 10}}
-   onPress={() => navigation.openDrawer()}>
-   <Icon name="reorder" color={'#ffffff'} />
- </TouchableOpacity>; */
+
 export default DashboardStackRoutes;

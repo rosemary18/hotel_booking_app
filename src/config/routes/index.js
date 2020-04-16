@@ -1,4 +1,4 @@
 import DrawerRoutes from './DrawerRoutes';
 import DashboardStackRoutes from './DashboardStackRoutes';
-
-export {DrawerRoutes, DashboardStackRoutes};
+import AdminDrawerRoutes from './AdminDrawerRoutes';
+export {DrawerRoutes, DashboardStackRoutes, AdminDrawerRoutes};

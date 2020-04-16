@@ -7,23 +7,38 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  ActivityIndicator,
+  Modal,
 } from 'react-native';
 import {Logo} from '../../assets/img';
 import {Icon} from 'react-native-elements';
 import {Actions} from 'react-native-router-flux';
-
-const SwitchToAdmin = () => {
-  Actions.jump('AdminAuth');
-};
+import {connect} from 'react-redux';
+import {loginUser} from '../../config/redux/actions/authActions';
+import PropTypes from 'prop-types';
 
 class AuthScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password: '',
+      userType: 'user',
+      errors: {},
       formAnimated: new Animated.Value(0),
+      isLoading: false,
     };
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      this.setState({errors: {}, isLoading: false});
+      Actions.replace('LoadingScreen', {toScreen: 'DrawerRoutes'});
+    }
+
+    if (nextProps.errors) {
+      this.setState({errors: nextProps.errors, isLoading: false});
+    }
   }
 
   componentDidMount() {
@@ -37,6 +52,15 @@ class AuthScreen extends Component {
       }).start(),
     ]).start();
   }
+  handleSubmit = () => {
+    const {email, password, userType} = this.state;
+    const userData = {
+      email,
+      password,
+      userType,
+    };
+    this.props.loginUser(userData);
+  };
   render() {
     return (
       <View
@@ -44,7 +68,7 @@ class AuthScreen extends Component {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#8ac6d1',
+          backgroundColor: '#ffffff',
         }}>
         <Animated.View
           style={{
@@ -56,35 +80,36 @@ class AuthScreen extends Component {
           }}>
           <View
             style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 25,
-            }}>
-            <Image source={Logo} style={{width: 100, height: 75}} />
-            <Text style={{marginTop: 20, color: '#ffffff', fontSize: 20}}>
-              Login & book your room now
-            </Text>
-            <Text style={{marginTop: 7, color: '#ffffff', fontSize: 20}}>
-              Only on Hotel Angel
-            </Text>
-          </View>
-          <View
-            style={{
               width: 300,
-              backgroundColor: '#fffdf9',
+              backgroundColor: '#fff',
               borderRadius: 25,
               padding: 20,
+              borderWidth: 1,
+              borderColor: '#889aa4',
             }}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 25,
+              }}>
+              <Image source={Logo} style={{width: 100, height: 75}} />
+            </View>
             <View style={styles.ViewInput}>
-              <Icon name="perm-identity" />
+              <Icon name="perm-identity" color="#889aa4" />
               <TextInput
-                onChangeText={val => this.setState({username: val})}
-                placeholder="Username/email ..."
+                onChangeText={val => this.setState({email: val})}
+                placeholder="Email ..."
                 style={styles.InputField}
               />
             </View>
+            {this.state.errors.email ? (
+              <Text style={{marginBottom: 10, color: 'red'}}>
+                * {this.state.errors.email}
+              </Text>
+            ) : null}
             <View style={styles.ViewInput}>
-              <Icon name="vpn-key" />
+              <Icon name="lock" color="#889aa4" />
               <TextInput
                 onChangeText={val => this.setState({password: val})}
                 maxLength={16}
@@ -93,37 +118,18 @@ class AuthScreen extends Component {
                 secureTextEntry={true}
               />
             </View>
-            <View style={{flexDirection: 'row'}}>
-              <Text
-                onPress={() => SwitchToAdmin()}
-                style={{
-                  flex: 1,
-                  textAlign: 'left',
-                  color: '#698474',
-                  marginBottom: 10,
-                }}>
-                Admin ?
+            {this.state.errors.password ? (
+              <Text style={{marginBottom: 10, color: 'red'}}>
+                * {this.state.errors.password}
               </Text>
-              <Text
-                onPress={() =>
-                  alert(
-                    'Sorry, this feature not available for now, coming soon...',
-                  )
-                }
-                style={{
-                  flex: 1,
-                  textAlign: 'right',
-                  color: '#698474',
-                  marginBottom: 10,
-                }}>
-                Forgot Password ?
-              </Text>
-            </View>
+            ) : null}
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
                 onPress={() => {
                   /* alert(`${this.state.username}, ${this.state.password}`); */
-                  Actions.jump('DrawerRoutes');
+                  /*  Actions.replace('DrawerRoutes'); */
+                  this.setState({isLoading: true});
+                  this.handleSubmit();
                 }}
                 style={styles.ButtonStyle}>
                 <Text style={styles.TextButton}>LOGIN</Text>
@@ -138,8 +144,45 @@ class AuthScreen extends Component {
                 <Text style={styles.TextButton}>REGISTER</Text>
               </TouchableOpacity>
             </View>
+            <View style={{flexDirection: 'row'}}>
+              <Text
+                onPress={() => Actions.jump('AdminAuth')}
+                style={{
+                  flex: 1,
+                  textAlign: 'left',
+                  color: '#889aa4',
+                  marginTop: 5,
+                }}>
+                Admin ?
+              </Text>
+              <Text
+                onPress={() =>
+                  alert(
+                    'Sorry, this feature not available for now, coming soon...',
+                  )
+                }
+                style={{
+                  flex: 1,
+                  textAlign: 'right',
+                  color: '#889aa4',
+                  marginTop: 5,
+                }}>
+                Forgot Password ?
+              </Text>
+            </View>
           </View>
         </Animated.View>
+        <Modal visible={this.state.isLoading} transparent={true}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: '#000000aa',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator />
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -149,7 +192,7 @@ const styles = StyleSheet.create({
   ViewInput: {
     width: '100%',
     borderRadius: 15,
-    borderColor: '#8ac6d1',
+    borderColor: '#889aa4',
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -169,14 +212,30 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#8ac6d1',
-    marginHorizontal: 5,
+    marginHorizontal: 2,
+    borderWidth: 1,
+    borderColor: '#889aa4',
+    marginVertical: 5,
   },
   TextButton: {
-    color: '#ffffff',
+    color: '#889aa4',
     fontWeight: 'bold',
     fontSize: 16,
   },
 });
 
-export default AuthScreen;
+AuthScreen.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors,
+});
+
+export default connect(
+  mapStateToProps,
+  {loginUser},
+)(AuthScreen);
